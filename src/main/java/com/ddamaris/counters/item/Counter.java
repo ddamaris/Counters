@@ -1,11 +1,12 @@
 package com.ddamaris.counters.item;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 public class Counter {
 
-    private Map<String, Long> counters;
+    private Map<String, Long> counters = new HashMap<>();
 
     public Counter() {}
 
@@ -14,7 +15,7 @@ public class Counter {
     }
 
     public void increment (String name) {
-        counters.computeIfPresent(name, (k, v) -> v++);
+        counters.computeIfPresent(name, (k, v) -> v + 1);
     }
 
     public Long getCounterValue(String name) {
