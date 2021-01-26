@@ -1,36 +1,13 @@
 package com.ddamaris.counters.item;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
-public class Counter {
+public interface Counter<T> {
+    public void addCounter (String name);
+    public void increment (String name);
+    public T getCounterValue(String name);
+    public void removeCounter(String name);
+    public T totalCounters();
+    public Set<String> allNames();
 
-    private Map<String, Long> counters = new HashMap<>();
-
-    public Counter() {}
-
-    public void addCounter (String name) {
-        counters.put(name, 0L);
-    }
-
-    public void increment (String name) {
-        counters.computeIfPresent(name, (k, v) -> v + 1);
-    }
-
-    public Long getCounterValue(String name) {
-        return counters.get(name);
-    }
-
-    public void removeCounter(String name) {
-        counters.remove(name);
-    }
-
-    public Long totalCounters() {
-        return counters.values().stream().reduce(0L, Long::sum);
-    }
-
-    public Set<String> allNames() {
-        return counters.keySet();
-    }
 }

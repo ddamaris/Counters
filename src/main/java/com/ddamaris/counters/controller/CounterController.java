@@ -1,6 +1,7 @@
 package com.ddamaris.counters.controller;
 
 import com.ddamaris.counters.item.Counter;
+import com.ddamaris.counters.item.CounterLong;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
@@ -9,7 +10,7 @@ import java.util.Set;
 @RequestMapping("/counters")
 public class CounterController {
 
-    private Counter count = new Counter();
+    private Counter<Long> count = new CounterLong();
 
     @PostMapping("/create")
     public void createCounter (@RequestParam String name) {
