@@ -1,48 +1,58 @@
 package com.ddamaris.counters.controller;
 
-import com.ddamaris.counters.item.Counter;
-import com.ddamaris.counters.item.CounterLong;
+import com.ddamaris.counters.repository.CounterRepository;
+import com.ddamaris.counters.service.CounterService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
 
 @RestController
-@RequestMapping("/counters")
 public class CounterController {
 
-    private Counter<Long> count = new CounterLong();
+    @Autowired
+    public CounterService service;
 
-    @PostMapping("/create") //POST http://localhost:8080/counters/create?name=...
-    public void createCounter (@RequestParam String name) {
-        count.addCounter(name);
-    }
-
-    @PutMapping("/increment") //PUT http://localhost:8080/counters/increment?name=...
-    public void incrementCounter(@RequestParam String name) {
-        count.increment(name);
-    }
-
-    @GetMapping("/getvalue") //GET http://localhost:8080/counters/getvalue?name=...
+    @PostMapping("/create")
     @ResponseBody
-    public Long getCounterValue(@RequestParam String name) {
-        return count.getCounterValue(name);
+    public ResponseEntity<?> createCounter (@RequestParam String name) {
+        if (service.newCounter(name)){
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Counter already exists",HttpStatus.BAD_REQUEST);
     }
 
-    @DeleteMapping("/delete") //DELETE http://localhost:8080/counters/delete?name=...
-    public void deleteCounter (@RequestParam String name) {
-        count.removeCounter(name);
+    @PutMapping("/increment")
+    public @ResponseBody Long incrementCounter(@RequestParam String name) {
+        return service.incrementCounter(name);
     }
 
-    @GetMapping("/gettotal") //GET http://localhost:8080/counters/gettotal
-    @ResponseBody
-    public Long getTotal() {
-        return count.totalCounters();
+    @GetMapping("/getvalue")
+    public @ResponseBody Long getCounterValue(@RequestParam String name)
+    {
+        return service.getCounterValue(name);
     }
 
-    @GetMapping("/getset") //GET http://localhost:8080/counters/getset
-    @ResponseBody
-    public Set<String> getSet() {
-        return count.allNames();
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteCounter (@RequestParam String name)
+    {
+        if (service.deleteCounter(name)){
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Counter does not exist",HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("/gettotal")
+    public @ResponseBody Long getTotal() {
+        return service.getTotal();
+    }
+
+    @GetMapping("/getset")
+    public @ResponseBody Set<String> getSet()
+    {
+        return service.getSet();
     }
 }
 
